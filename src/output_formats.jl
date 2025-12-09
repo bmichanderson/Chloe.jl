@@ -323,7 +323,7 @@ end
 function write_result(config::ChloeConfig, target::FwdRev{CircularSequence}, result::ChloeAnnotation, filestem::String)::Tuple{Union{String,IO},String}
     if ~config.no_transform
         FASTAWriter(open(filestem * ".chloe.fa", "w")) do outfile
-            write(outfile, FASTARecord(result.target_id, target.forward[1:length(target.forward)]))
+            write(outfile, FASTARecord(result.target_id, get_original_sequence(target.forward)))
         end
     end
     if config.sff
@@ -339,14 +339,14 @@ function write_result(config::ChloeConfig, target::FwdRev{CircularSequence}, res
         end
         if config.gbk
             out = filestem * ".chloe.gbk"
-            biojulia.sequence = target.forward[1:length(target.forward)]
+            biojulia.sequence = get_original_sequence(target.forward)
             spaces = 29 - length(result.target_id) - length(length(biojulia.sequence))
             biojulia.header = "LOCUS       $(result.target_id)$(lpad(length(biojulia.sequence), spaces, " ")) bp     DNA    circular PLN $(uppercase(Dates.format(now(), "dd-uuu-yyyy")))"
             GenBank.printgbk(out, biojulia)
         end
         if config.embl
             out = filestem * ".chloe.embl"
-            biojulia.sequence = target.forward[1:length(target.forward)]
+            biojulia.sequence = get_original_sequence(target.forward)
             EMBL.printembl(out, biojulia)
         end
     end
