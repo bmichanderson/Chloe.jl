@@ -315,6 +315,7 @@ function chloe2biojulia(chloe::ChloeAnnotation)::GenomicAnnotations.Record
                 number = intron_count)
             intron_count += 1
         end
+        locus_index += 1
     end
     sort!(biojulia.genes)
     biojulia
